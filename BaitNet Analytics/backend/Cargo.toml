@@ -1,0 +1,35 @@
+[package]
+name = "osint-tracker"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+members = ["."]
+resolver = "2"
+
+[dependencies]
+async-trait = "0.1"
+axum = { version = "0.7", features = ["macros"] }
+base64 = "0.22"
+chrono = { version = "0.4", features = ["serde"] }
+dotenvy = "0.15"
+futures = "0.3"
+hickory-resolver = { version = "0.24", features = ["tokio-runtime", "system-config"] }
+ipnet = "2"
+phonenumber = "0.3"
+redis = { version = "0.25", features = ["tokio-comp", "connection-manager"] }
+regex = "1"
+reqwest = { version = "0.12", features = ["json", "rustls-tls", "stream"], default-features = false }
+scraper = "0.19"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sqlx = { version = "0.8", features = ["runtime-tokio-rustls", "postgres", "chrono", "uuid", "json", "macros", "migrate"] }
+thiserror = "1"
+tokio = { version = "1", features = ["full"] }
+tower = { version = "0.5", features = ["limit"] }
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+url = "2"
+uuid = { version = "1", features = ["v4", "serde"] }
+validator = { version = "0.18", features = ["derive"] }

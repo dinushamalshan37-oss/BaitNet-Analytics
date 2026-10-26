@@ -1,0 +1,66 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-osint}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-before-deploying}
+      POSTGRES_DB: ${POSTGRES_DB:-osint_tracker}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-osint} -d ${POSTGRES_DB:-osint_tracker}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-osint}:${POSTGRES_PASSWORD:-change-me-before-deploying}@postgres:5432/${POSTGRES_DB:-osint_tracker}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      REDIS_TTL_SECONDS: ${REDIS_TTL_SECONDS:-3600}
+      BACKEND_PORT: 8080
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:3000}
+      VIRUSTOTAL_API_KEY: ${VIRUSTOTAL_API_KEY:-}
+      SHODAN_API_KEY: ${SHODAN_API_KEY:-}
+      HIBP_API_KEY: ${HIBP_API_KEY:-}
+      PHISHTANK_API_KEY: ${PHISHTANK_API_KEY:-}
+      RUST_LOG: ${RUST_LOG:-info}
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8080}
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8080}
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres-data:
+  redis-data:

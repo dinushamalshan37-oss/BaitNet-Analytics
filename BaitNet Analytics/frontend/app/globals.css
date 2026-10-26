@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  background: #101922;
+  color: #e2e8f0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: #101922; }
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; }
+
+.panel-card {
+  @apply rounded-2xl border border-line bg-panel p-5;
+}
+
+.field {
+  @apply w-full rounded-xl border border-line bg-ink px-3 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-mint;
+}
+
+.button-primary {
+  @apply rounded-xl bg-mint px-4 py-2.5 text-sm font-semibold text-ink transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+.button-secondary {
+  @apply rounded-xl border border-line px-4 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-white/5;
+}
+
+.skeleton {
+  @apply animate-pulse rounded-xl bg-panel;
+}
+
+.leaflet-container { background: #17232e; font-family: Arial, Helvetica, sans-serif; }
